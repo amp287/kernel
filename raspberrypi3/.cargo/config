@@ -1,0 +1,8 @@
+[target.aarch64-unknown-none]
+rustflags = ["-C", "link-arg=-Tlink.x"]
+
+[build]
+target = "aarch64-unknown-none"
+
+[target.'cfg(target_os = "none")']
+runner = "qemu-system-aarch64 -machine raspi3 -device isa-debug-exit,iobase=0xf4,iosize=0x04 -nographic -kernel"
