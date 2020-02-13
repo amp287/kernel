@@ -26,3 +26,7 @@ test = true
 [[bin]]
 name = "kernel"
 test = false
+
+[[test]]
+name = "allocator"
+harness = true

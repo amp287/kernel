@@ -4,17 +4,25 @@
 #![feature(custom_test_frameworks)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
+#![feature(alloc_error_handler)] 
+
+extern crate alloc;
 
 pub mod print;
 pub mod uart;
 pub mod mailbox;
 pub mod qemu;
+pub mod allocator;
 
 use core::panic::PanicInfo;
 use qemu::{qemu_exit, QemuExitCode};
 
-#[cfg(test)]
-fn test_runner(tests: &[&dyn Fn()]) {
+#[alloc_error_handler]
+fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
+    panic!("allocation error: {:?}", layout)
+}
+
+pub fn test_runner(tests: &[&dyn Fn()]) {
     serial_println!("Running {} tests", tests.len());
     for test in tests {
         test();

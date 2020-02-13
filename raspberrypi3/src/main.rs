@@ -1,10 +1,17 @@
 #![no_main]
 #![no_std]
+#![feature(alloc_error_handler)]
 
 use core::panic::PanicInfo;
 use libkernel::serial_println;
 use cortex_a::regs;
 use register::cpu::RegisterReadOnly;
+use libkernel::allocator::LockedHeap;
+
+extern crate alloc;
+
+#[global_allocator]
+static ALLOCATOR: LockedHeap = LockedHeap::empty();
 
 #[no_mangle]
 pub unsafe extern "C" fn kernel_main(r0: u32, r1: u32, atags: u32) -> ! {
