@@ -4,7 +4,6 @@ use alloc::alloc::{GlobalAlloc, Layout};
 use core::ptr::null_mut;
 use spin::Mutex;
 
-
 struct Block {
     next: Option<&'static Block>
 }
@@ -77,33 +76,101 @@ impl MemoryBlockList {
 }
 
 pub struct Heap {
-    _64byte_blocks: MemoryBlockList
+    _8byte_blocks: MemoryBlockList,
+    _16byte_blocks: MemoryBlockList,
+    _32byte_blocks: MemoryBlockList,
+    _64byte_blocks: MemoryBlockList,
+    _128byte_blocks: MemoryBlockList,
+    _256byte_blocks: MemoryBlockList,
+    _512byte_blocks: MemoryBlockList,
+    _1024byte_blocks: MemoryBlockList,
+    _2048byte_blocks: MemoryBlockList
 }
 
 impl Heap {
     pub unsafe fn new(start_address: usize, size: usize) -> Heap {
+        let num_block_lists = 9;
         Heap {
-            _64byte_blocks: MemoryBlockList::new(64, size, start_address),
+            _8byte_blocks: MemoryBlockList::new(8, size / num_block_lists, start_address),
+            _16byte_blocks: MemoryBlockList::new(16, size / num_block_lists, start_address + (size / num_block_lists * 1)),
+            _32byte_blocks: MemoryBlockList::new(32, size / num_block_lists, start_address + (size / num_block_lists * 2)),
+            _64byte_blocks: MemoryBlockList::new(64, size / num_block_lists, start_address + (size / num_block_lists * 3)),
+            _128byte_blocks: MemoryBlockList::new(128, size / num_block_lists, start_address + (size / num_block_lists * 4)),
+            _256byte_blocks: MemoryBlockList::new(256, size / num_block_lists, start_address + (size / num_block_lists * 5)),
+            _512byte_blocks: MemoryBlockList::new(512, size / num_block_lists, start_address + (size / num_block_lists * 6)),
+            _1024byte_blocks: MemoryBlockList::new(1024, size / num_block_lists, start_address + (size / num_block_lists * 7)),
+            _2048byte_blocks: MemoryBlockList::new(2048, size / num_block_lists, start_address + (size / num_block_lists * 8)),
         }
     }
 }
 
 impl Heap {
     unsafe fn alloc(&mut self, _layout: Layout) -> *mut u8 {
-        if let Some(block) = self._64byte_blocks.alloc() {
-            block
+        let size = _layout.size();
+        let mut block: Option<*mut u8> = None; 
+
+        if size <= 8 {
+            block = self._8byte_blocks.alloc();
+        } else if size <= 16 {
+            block =  self._16byte_blocks.alloc();
+        } else if size <=  32 {
+            block = self._32byte_blocks.alloc();
+        } else if size <= 64 {
+            block = self._64byte_blocks.alloc();
+        } else if size <= 128 {
+            block = self._128byte_blocks.alloc();
+        } else if size <= 256 {
+            block =  self._256byte_blocks.alloc();
+        } else if size <= 512 {
+            block = self._512byte_blocks.alloc();
+        } else if size <= 1024 {
+            block = self._1024byte_blocks.alloc();
+        } else if size <= 2048 {
+            block = self._2048byte_blocks.alloc();
+        }
+
+        if let Some(blk) = block {
+            blk
         } else {
             null_mut()
         }
     }
 
     unsafe fn dealloc(&mut self, _ptr: *mut u8, _layout: Layout) {
-       self._64byte_blocks.dealloc(_ptr);
+        let size = _layout.size();
+
+        if size <= 8 {
+            self._8byte_blocks.dealloc(_ptr);
+        } else if size <= 16 {
+            self._16byte_blocks.dealloc(_ptr);
+        } else if size <=  32 {
+            self._32byte_blocks.dealloc(_ptr);
+        } else if size <= 64 {
+            self._64byte_blocks.dealloc(_ptr);
+        } else if size <= 128 {
+            self._128byte_blocks.dealloc(_ptr);
+        } else if size <= 256 {
+            self._256byte_blocks.dealloc(_ptr);
+        } else if size <= 512 {
+            self._512byte_blocks.dealloc(_ptr);
+        } else if size <= 1024 {
+            self._1024byte_blocks.dealloc(_ptr);
+        } else if size <= 2048 {
+            self._2048byte_blocks.dealloc(_ptr);
+        }
     }
 
     pub const fn empty() -> Heap {
         Heap {
-            _64byte_blocks: MemoryBlockList::empty()
+            _8byte_blocks: MemoryBlockList::empty(),
+            _16byte_blocks: MemoryBlockList::empty(),
+            _32byte_blocks: MemoryBlockList::empty(),
+            _64byte_blocks: MemoryBlockList::empty(),
+            _128byte_blocks: MemoryBlockList::empty(),
+            _256byte_blocks: MemoryBlockList::empty(),
+            _512byte_blocks: MemoryBlockList::empty(),
+            _1024byte_blocks: MemoryBlockList::empty(),
+            _2048byte_blocks: MemoryBlockList::empty(),
         }
     }
 }
@@ -123,7 +190,9 @@ impl LockedHeap {
 unsafe impl GlobalAlloc for LockedHeap {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         if let Some(ref mut heap) = *self.0.lock() {
-            heap.alloc(layout)
+            let addr = heap.alloc(layout);
+            //crate::serial_println!("Allocated: {:?}, layout: {:?}", addr, layout);
+            addr
         } else {
             null_mut()
         }
@@ -131,6 +200,7 @@ unsafe impl GlobalAlloc for LockedHeap {
 
     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
         if let Some(ref mut heap) = *self.0.lock() {
+            //crate::serial_println!("Deallocate: {:?}, layout: {:?}", ptr, layout);
             heap.dealloc(ptr, layout)
         } 
     }

@@ -8,7 +8,7 @@ pub struct QemuSerialPrint;
 lazy_static! {
     pub static ref SERIAL1: Mutex<QemuSerialPrint> = {
         unsafe {
-        uart::uart_init();
+            uart::uart_init();
         }
         Mutex::new(QemuSerialPrint{})
     };

@@ -11,7 +11,7 @@ pub enum QemuExitCode {
     Failed = 0x1,
 }
 
-pub fn qemu_exit(code: QemuExitCode) {
+pub fn qemu_exit(code: QemuExitCode) -> !{
     let block = qemu_parameter_block {
         arg0: ADP_Stopped_ApplicationExit,
         arg1: code as u64,

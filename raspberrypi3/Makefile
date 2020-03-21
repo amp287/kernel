@@ -11,6 +11,9 @@ objdump:
 qemu:
 	qemu-system-aarch64 -machine raspi3 -nographic -kernel kernel8.img
 
+qemu-debug:
+	qemu-system-aarch64 -D qemu_debug.log -d cpu_reset,guest_errors,int -machine raspi3 -nographic -kernel kernel8.img
+
 qemu-gdb:
 	qemu-system-aarch64 -machine raspi3 -nographic -gdb tcp::3333 -S -kernel kernel8.img
 
@@ -19,6 +22,7 @@ qemu-asm:
 
 gdb: 
 	~/dev_tools/aarch64-none-elf-gdb/bin/aarch64-none-elf-gdb target/aarch64-unknown-none/debug/kernel
+	# use command: target remote :3333 to debug
 
 clean: 
 	rm -rf target

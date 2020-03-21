@@ -30,3 +30,7 @@ test = false
 [[test]]
 name = "allocator"
 harness = true
+
+[[test]]
+name = "allocator_should_panic"
+harness = true

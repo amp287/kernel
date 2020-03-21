@@ -7,11 +7,17 @@ use libkernel::serial_println;
 use cortex_a::regs;
 use register::cpu::RegisterReadOnly;
 use libkernel::allocator::LockedHeap;
+use libkernel::interrupt::{interrupt_init, generate_interrupt};
 
 extern crate alloc;
 
 #[global_allocator]
 static ALLOCATOR: LockedHeap = LockedHeap::empty();
+
+#[alloc_error_handler]
+fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
+    panic!("allocation error: {:?}", layout)
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn kernel_main(r0: u32, r1: u32, atags: u32) -> ! {
@@ -30,11 +36,19 @@ pub unsafe extern "C" fn kernel_main(r0: u32, r1: u32, atags: u32) -> ! {
 
     serial_println!("Exception Level: {}", el);
 
+    interrupt_init();
+
+    serial_println!("Init finished");
+
+    generate_interrupt();
+
+    serial_println!("Shouldnt get here");
+
     loop {}
 }
 
 #[panic_handler]
 fn panic(_panic: &PanicInfo<'_>) -> ! {
-    serial_println!("PANIC!");
+    serial_println!("PANIC!, {}", _panic);
     loop {}
 }

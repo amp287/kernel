@@ -13,14 +13,10 @@ pub mod uart;
 pub mod mailbox;
 pub mod qemu;
 pub mod allocator;
+pub mod interrupt;
 
 use core::panic::PanicInfo;
 use qemu::{qemu_exit, QemuExitCode};
-
-#[alloc_error_handler]
-fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
-    panic!("allocation error: {:?}", layout)
-}
 
 pub fn test_runner(tests: &[&dyn Fn()]) {
     serial_println!("Running {} tests", tests.len());
@@ -42,8 +38,7 @@ pub unsafe extern "C" fn kernel_main() -> ! {
 pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("[failed]\n");
     serial_println!("Error: {}\n", info);
-    qemu_exit(QemuExitCode::Failed);
-    loop {}
+    qemu_exit(QemuExitCode::Failed)
 }
 
 #[cfg(test)]
