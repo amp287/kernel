@@ -14,6 +14,7 @@ pub mod mailbox;
 pub mod qemu;
 pub mod allocator;
 pub mod interrupt;
+pub mod mmu;
 
 use core::panic::PanicInfo;
 use qemu::{qemu_exit, QemuExitCode};

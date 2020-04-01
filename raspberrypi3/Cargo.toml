@@ -34,3 +34,7 @@ harness = true
 [[test]]
 name = "allocator_should_panic"
 harness = true
+
+[[test]]
+name = "mmu_test"
+harness = true

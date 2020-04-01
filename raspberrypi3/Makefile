@@ -12,7 +12,7 @@ qemu:
 	qemu-system-aarch64 -machine raspi3 -nographic -kernel kernel8.img
 
 qemu-debug:
-	qemu-system-aarch64 -D qemu_debug.log -d cpu_reset,guest_errors,int -machine raspi3 -nographic -kernel kernel8.img
+	qemu-system-aarch64 -D qemu_debug.log -d cpu_reset,guest_errors,int,mmu,page -machine raspi3 -nographic -kernel kernel8.img
 
 qemu-gdb:
 	qemu-system-aarch64 -machine raspi3 -nographic -gdb tcp::3333 -S -kernel kernel8.img
