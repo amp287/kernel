@@ -166,19 +166,19 @@ fn simple_write() {
         }
     } 
 
-    // 8KB of stack 
-    for (index, address) in (0x7D000_u64..0x80000_u64).step_by(0x1000).enumerate() {
+    // 24KB of stack 
+    for (index, address) in (0x7A000_u64..0x80000_u64).step_by(0x1000).enumerate() {
         block_entry = BlockDescriptor::new(PhysicalAddress::new(address.try_into().unwrap()), GranuleSize::_4KB, block_attrib);
 
-        serial_println!("Setting index: {}", index + 125);
+        serial_println!("Setting index: {}, address: {:X}, block_entry: {}", index + 122, address, block_entry);
 
         unsafe { 
-            LVL3TABLE.set_entry((index + 125).try_into().unwrap(), TableEntry::Block(block_entry));
+            LVL3TABLE.set_entry((index + 122).try_into().unwrap(), TableEntry::Block(block_entry));
         }
     }
 
-    let virt_addr = VirtualAddress::new(0x8A000);
-    phys_addr = PhysicalAddress::new(0x7A000);
+    let virt_addr = VirtualAddress::new(0xE3000);
+    phys_addr = PhysicalAddress::new(0x79000);
 
     // check to see if this physical address is ok to be used (as in its not a register and gpu doesnt change here).
     block_entry = BlockDescriptor::new(phys_addr, GranuleSize::_4KB, block_attrib);
@@ -206,7 +206,7 @@ fn simple_write() {
             _ => panic!("level 2 table entry 0 is not a table entry!"),
         };
 
-        LVL3TABLE.set_entry(138, TableEntry::Block(block_entry));
+        LVL3TABLE.set_entry(227, TableEntry::Block(block_entry));
 
         enable_mmu(&LVL0TABLE);
         serial_println!("mmu enabled!");
