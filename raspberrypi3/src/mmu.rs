@@ -134,7 +134,7 @@ impl TranslationTable {
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum AccessPermissions {
     ReadWriteHigherEL = 0,
     ReadWriteAllEL = 1,
@@ -142,7 +142,7 @@ pub enum AccessPermissions {
     ReadOnlyAllEL = 3
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum Shareability {
     NonShareable = 0,
     Reserved = 1,
@@ -150,7 +150,7 @@ pub enum Shareability {
     InnerShareable = 3,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum AttributeIndex {
     Zero = 0,
     One = 1,
@@ -163,6 +163,7 @@ pub enum AttributeIndex {
 }
 
 
+#[derive(Debug)]
 pub enum GranuleSize {
     _4KB = 0,
     _16KB = 1,
@@ -193,13 +194,25 @@ macro_rules! set_bits {
     }
 }
 
+macro_rules! get_bits {
+    ($data:expr, $start_bit:expr, $mask:expr) => {
+        {
+            let mut copy = $data;
+            copy = copy >> $start_bit;
+            copy &= $mask;
+            copy
+        }
+    }
+}
+
+#[derive(Debug)]
 pub enum TableEntry {
     Block(BlockDescriptor),
     Table(TableDescriptor),
     Invalid,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct BlockDescriptorAttributes {
     // PBHA ignored when ARMv8.2-TTPBHA is not implemented
     pub page_base_hw_attr: u8,
@@ -216,7 +229,32 @@ pub struct BlockDescriptorAttributes {
     pub attribute_index: AttributeIndex,
 }
 
+#[derive(Debug)]
 pub struct BlockDescriptor (u64);
+
+use core::fmt;
+
+impl fmt::Display for BlockDescriptor {
+
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:X} = [ PBHA:{:X}, UXN:{}, PXN:{}, Contiguous:{}, DBM:{}, nT:{}, nG:{}, AF:{}, SH:{}, AP:{:X}, NS:{}, AttrIndx:{:X}, Address:{:X} ]",
+            self.0,
+            get_bits!(self.0, 59, 0xF),
+            get_bits!(self.0, 54, 0x1),
+            get_bits!(self.0, 53, 0x1), 
+            get_bits!(self.0, 52, 0x1),
+            get_bits!(self.0, 51, 0x1),
+            get_bits!(self.0, 16, 0x1), 
+            get_bits!(self.0, 11, 0x1),
+            get_bits!(self.0, 10, 0x1), 
+            get_bits!(self.0, 8, 0x3),
+            get_bits!(self.0, 6, 0x3),
+            get_bits!(self.0, 5, 0x1),
+            get_bits!(self.0, 2, 0x3),
+            get_bits!(self.0, 12, 0xFFFF_FFFF_F)   
+        )
+    }
+}
 
 // Only Stage 1 is implemented
 impl BlockDescriptor {
@@ -235,6 +273,7 @@ impl BlockDescriptor {
         descriptor.set_shareability_field(attributes.shareability);
         descriptor.set_user_execute_never(attributes.user_exec_never);
         descriptor.set_access_permissions(attributes.access_permissions);
+        descriptor.set_access_flag(attributes.access_flag);
         descriptor.set_output_address(addr, granule_size);
 
         descriptor
@@ -257,7 +296,8 @@ impl BlockDescriptor {
     } 
 
     pub fn set_output_address(&mut self, address: PhysicalAddress, _granule_size: GranuleSize) {
-       self.0 = (self.0 & !0xFFFF_FFFF_F000) | (address.0 & 0xFFFF_FFFF_F000);
+       //self.0 = (self.0 & !0xFFFF_FFFF_F000) | (address.0 & 0xFFFF_FFFF_F000);
+       set_bits!(self.0, 12, address.0 >> 12, 0xFFFF_FFFF_F);
     }
 
     pub fn set_invalid(&mut self) {
@@ -325,7 +365,7 @@ impl BlockDescriptor {
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct TableDescriptorAttributes {
     pub non_secure: bool,
     pub access_permissions: AccessPermissions,
@@ -333,6 +373,7 @@ pub struct TableDescriptorAttributes {
     pub priv_exec_never: bool,
 }
 
+#[derive(Debug)]
 pub struct TableDescriptor (u64);
 
 impl TableDescriptor {
@@ -435,18 +476,17 @@ pub unsafe fn enable_mmu(level_0_table: &TranslationTable) {
         + TCR_EL1::IPS.val(physical_addr_range) // Intermediate Physical Address Size
         + TCR_EL1::TG0::KiB_4 // set granule size for TTBRO_EL1
         + TCR_EL1::SH0::Inner // set shareability (inner is typically all processor)
-        + TCR_EL1::ORGN0::WriteBack_ReadAlloc_WriteAlloc_Cacheable
-        + TCR_EL1::IRGN0::WriteBack_ReadAlloc_WriteAlloc_Cacheable
-        //+ TCR_EL1::ORGN0::NonCacheable
-        //+ TCR_EL1::IRGN0::NonCacheable
+        + TCR_EL1::ORGN0::NonCacheable
+        + TCR_EL1::IRGN0::NonCacheable
         + TCR_EL1::EPD0::EnableTTBR0Walks
-        + TCR_EL1::T0SZ.val(32)
+        + TCR_EL1::EPD1::DisableTTBR1Walks
+        + TCR_EL1::T0SZ.val(16)
     );
 
     barrier::isb(barrier::SY);
 
     // Enable the MMU and turn on data and instruction caching.
-    SCTLR_EL1.modify(SCTLR_EL1::M::Enable + SCTLR_EL1::C::Cacheable + SCTLR_EL1::I::Cacheable);
+    SCTLR_EL1.modify(SCTLR_EL1::M::Enable + SCTLR_EL1::C::NonCacheable + SCTLR_EL1::I::NonCacheable);
 
     // Force MMU init to complete before next instruction.
     barrier::isb(barrier::SY);
