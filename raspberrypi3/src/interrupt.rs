@@ -13,7 +13,7 @@ pub unsafe fn interrupt_init() {
 
     let addr: u64 = &__interrupt_handlers as *const _ as u64;
 
-    regs::VBAR_EL1.set(__interrupt_handlers);
+    regs::VBAR_EL1.set(addr);
 
     barrier::isb(barrier::SY)
 }

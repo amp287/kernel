@@ -4,6 +4,6 @@ rustflags = ["-C", "link-arg=-Tlink.x"]
 [build]
 target = "aarch64-unknown-none"
 
-# Need to create script that converts cargo built executable and converts it using objcopy
+# Need to create script that converts using objcopy
 [target.'cfg(target_os = "none")']
-runner = "qemu-system-aarch64 -machine raspi3 -semihosting -nographic -kernel"
+runner = "./test_runner.sh"
