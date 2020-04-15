@@ -25,9 +25,9 @@ jobs:
     # Get all needed software to build and run
     - name: Setup 
       run: |
-        rustup install nightly,
-        rustup component add rust-src, 
-        cargo install cargo-xbuild,
+        rustup install nightly ,
+        rustup component add rust-src , 
+        cargo install cargo-xbuild ,
         sudo apt-get install qemu
         
     # Runs tests 30 second timeout for each test
