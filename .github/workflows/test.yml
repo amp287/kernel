@@ -28,6 +28,7 @@ jobs:
         rustup install nightly
         rustup component add rust-src
         cargo install cargo-xbuild
+        sudo apt-get update
         sudo apt-get install qemu
         
     # Runs tests 30 second timeout for each test
