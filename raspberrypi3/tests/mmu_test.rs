@@ -3,25 +3,13 @@
 #![feature(custom_test_frameworks)]
 #![test_runner(libkernel::test_runner)]
 #![reexport_test_harness_main = "test_main"]
-#![feature(alloc_error_handler)] 
 
 extern crate alloc;
 
 use libkernel::mmu::*;
 use libkernel::{serial_println, serial_print};
-use libkernel::qemu::{QemuExitCode, qemu_exit};
 use core::panic::PanicInfo;
-use libkernel::allocator::LockedHeap;
 use core::convert::TryInto;
-
-#[global_allocator]
-static mut ALLOCATOR: LockedHeap = LockedHeap::empty();
-
-#[alloc_error_handler]
-fn alloc_error_handler(_layout: alloc::alloc::Layout) -> ! {
-    serial_println!("[Failure] Shouldnt be any memory allocation!");
-    qemu_exit(QemuExitCode::Failed)
-}
 
 #[no_mangle]
 static mut LVL0TABLE: TranslationTable = TABLE_INIT;
@@ -102,7 +90,7 @@ fn simple_write() {
     let mut phys_addr: PhysicalAddress;
     let mut table_entry: TableDescriptor;
 
-    let mut attributes = TableDescriptorAttributes{
+    let attributes = TableDescriptorAttributes{
         non_secure: true,
         access_permissions: AccessPermissions::ReadWriteAllEL, 
         user_exec_never: false,
@@ -159,7 +147,7 @@ fn simple_write() {
     for (index, address) in (0x80000_u64..0xE2000_u64).step_by(0x1000).enumerate() {
         block_entry = BlockDescriptor::new(PhysicalAddress::new(address.try_into().unwrap()), GranuleSize::_4KB, block_attrib);
 
-        serial_println!("Setting index: {}, address: {:X}, block_entry: {}", index + 128, address, block_entry);
+        //serial_println!("Setting index: {}, address: {:X}, block_entry: {}", index + 128, address, block_entry);
         
         unsafe { 
             LVL3TABLE.set_entry((index + 128).try_into().unwrap(), TableEntry::Block(block_entry));
@@ -170,7 +158,7 @@ fn simple_write() {
     for (index, address) in (0x7A000_u64..0x80000_u64).step_by(0x1000).enumerate() {
         block_entry = BlockDescriptor::new(PhysicalAddress::new(address.try_into().unwrap()), GranuleSize::_4KB, block_attrib);
 
-        serial_println!("Setting index: {}, address: {:X}, block_entry: {}", index + 122, address, block_entry);
+        //serial_println!("Setting index: {}, address: {:X}, block_entry: {}", index + 122, address, block_entry);
 
         unsafe { 
             LVL3TABLE.set_entry((index + 122).try_into().unwrap(), TableEntry::Block(block_entry));

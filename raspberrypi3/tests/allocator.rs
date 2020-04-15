@@ -3,27 +3,17 @@
 #![feature(custom_test_frameworks)]
 #![test_runner(libkernel::test_runner)]
 #![reexport_test_harness_main = "test_main"]
-#![feature(alloc_error_handler)] 
 
 extern crate alloc;
 
 use libkernel::allocator::LockedHeap;
 use libkernel::{serial_println, serial_print};
 use libkernel::qemu::{QemuExitCode, qemu_exit};
+use libkernel::ALLOCATOR;
 use core::panic::PanicInfo;
 use alloc::boxed::Box;
 
-#[global_allocator]
-static mut ALLOCATOR: LockedHeap = LockedHeap::empty();
-
 const MEM_SIZE:usize = 64*1000;
-
-#[alloc_error_handler]
-fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
-    serial_println!("allocation error: {:?}", layout);
-    serial_println!("FAIL");
-    qemu_exit(QemuExitCode::Failed)
-}
 
 #[no_mangle]
 pub extern "C" fn kernel_main() -> ! {

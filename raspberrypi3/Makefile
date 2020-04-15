@@ -5,6 +5,9 @@ build:
 	cargo xbuild
 	cargo objcopy --target aarch64-unknown-none.json target/aarch64-unknown-none/debug/kernel -- -O binary kernel8.img
 
+test:
+	cargo xtest -- 30
+
 objdump:
 	cargo objdump --target aarch64-unknown-none.json -- -disassemble -print-imm-hex target/aarch64-unknown-none/debug/kernel
 

@@ -18,6 +18,15 @@ pub mod mmu;
 
 use core::panic::PanicInfo;
 use qemu::{qemu_exit, QemuExitCode};
+use crate::allocator::LockedHeap;
+
+#[global_allocator]
+pub static mut ALLOCATOR: LockedHeap = LockedHeap::empty();
+
+#[alloc_error_handler]
+fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
+    panic!("allocation error: {:?}", layout)
+}
 
 pub fn test_runner(tests: &[&dyn Fn()]) {
     serial_println!("Running {} tests", tests.len());
