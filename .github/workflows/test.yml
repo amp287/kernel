@@ -36,6 +36,7 @@ jobs:
         rustup component add llvm-tools-preview
         brew update
         brew install qemu
+        brew install coreutils
         
     - name: Versions
       run: |
