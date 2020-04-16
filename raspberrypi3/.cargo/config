@@ -2,7 +2,7 @@
 rustflags = ["-C", "link-arg=-Tlink.x"]
 
 [build]
-target = "aarch64-unknown-none"
+target = "aarch64-unknown-none.json"
 
 # Need to create script that converts using objcopy
 [target.'cfg(target_os = "none")']
