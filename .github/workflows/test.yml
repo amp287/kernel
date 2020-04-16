@@ -44,4 +44,6 @@ jobs:
         
     # Runs tests 30 second timeout for each test
     - name: Run Tests
-      run: cargo xtest --verbose -- 30
+      run: |
+        cc=clang
+        cargo xtest --verbose -- 30
