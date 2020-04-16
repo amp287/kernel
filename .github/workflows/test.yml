@@ -32,6 +32,8 @@ jobs:
         rustup install nightly
         rustup component add rust-src
         cargo install cargo-xbuild
+        cargo install cargo-binutils
+        rustup component add llvm-tools-preview
         brew update
         brew install qemu
         
