@@ -29,7 +29,7 @@ jobs:
     # Get all needed software to build and run
     - name: Setup 
       run: |
-        cc = clang
+        cc=clang
         rustup install nightly
         rustup component add rust-src
         cargo install cargo-xbuild
