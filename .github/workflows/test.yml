@@ -35,6 +35,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install qemu
         
+    - name: Versions
+      run: |
+        cargo --version
+        rustc --version
+        qemu-system-aarch64 --version 
+        
     # Runs tests 30 second timeout for each test
     - name: Run Tests
       run: cargo xtest --verbose -- 30
