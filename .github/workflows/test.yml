@@ -32,8 +32,8 @@ jobs:
         rustup install nightly
         rustup component add rust-src
         cargo install cargo-xbuild
-        sudo brew update
-        sudo brew install qemu
+        brew update
+        brew install qemu
         
     - name: Versions
       run: |
