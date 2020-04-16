@@ -7,8 +7,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
     let mut build = Build::new();
 
-    println!("cargo:rustc-env=CC=clang");
-
     // extend the library search path
     println!("cargo:rustc-link-search={}", out_dir.display());
 
@@ -22,6 +20,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // assemble the `asm.s` file
     build.file("src/start.s");
     build.file("src/interrupt.s");
+    println!("Using compiler: {:?}", build.get_compiler());
     build.flag("--target=aarch64-unknown-elf").compile("kernel_assembly");
 
     Ok(())
