@@ -7,6 +7,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
     let mut build = Build::new();
 
+    println!("cargo:rustc-env=CC=clang");
+
     // extend the library search path
     println!("cargo:rustc-link-search={}", out_dir.display());
 
