@@ -10,7 +10,7 @@ if [ -z "$2" ]; then
     exit 125
 fi
 
-cargo objcopy $1 -- --output-target binary $1.img
+cargo objcopy $1 -- --output-target=binary $1.img
 
 rm -f $1.objdump
 
