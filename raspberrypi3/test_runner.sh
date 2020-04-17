@@ -3,6 +3,8 @@
 # $1 is the cargo executable
 # $2 is the time in seconds before the test is killed and deemed a failure
 
+set -x
+
 if [ -z "$2" ]; then 
     echo "Timeout value is required!"
     exit 125
