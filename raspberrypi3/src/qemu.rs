@@ -35,11 +35,13 @@ struct qemu_parameter_block {
 /// as exit code.
 ///
 /// If first paraemter != `ADP_Stopped_ApplicationExit`, exit code `1` is used.
-fn semihosting_sys_exit_call(block: &qemu_parameter_block) -> ! {
+extern "C" fn semihosting_sys_exit_call(block: &qemu_parameter_block) -> ! {
     unsafe {
+        // move block address into x1 before we overwrite x0/w0 
         asm!(
-            "mov w0, 0x18
+            "
              mov x1, $0
+             mov w0, 0x18
              hlt #0xF000"
              : // No Outputs
              : "r"(block as *const _ as u64)
