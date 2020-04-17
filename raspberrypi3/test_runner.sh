@@ -10,11 +10,11 @@ if [ -z "$2" ]; then
     exit 125
 fi
 
-cargo objcopy $1 -- --output-target=binary $1.img
+cargo objcopy $1 <args> --output-target=binary $1.img
 
 rm -f $1.objdump
 
-cargo objdump -- -disassemble -print-imm-hex $1 >> $1.objdump
+cargo objdump <args> -disassemble -print-imm-hex $1 >> $1.objdump
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     TIMEOUT_CMD="timeout"
