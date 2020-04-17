@@ -43,9 +43,9 @@ jobs:
         cargo --version
         rustc --version
         qemu-system-aarch64 --version 
+        cargo objcopy --version
         
     # Runs tests 30 second timeout for each test
     - name: Run Tests
       run: |
-        cc=clang
         cargo xtest --verbose -- 30
