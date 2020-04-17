@@ -10,11 +10,11 @@ if [ -z "$2" ]; then
     exit 125
 fi
 
-cargo objcopy --target aarch64-unknown-none.json "$1" -- -O binary "$1.img"
+cargo objcopy $1 -- -O binary $1.img
 
-rm -f "$1.objdump"
+rm -f $1.objdump
 
-cargo objdump --target aarch64-unknown-none.json -- -disassemble -print-imm-hex "$1" >> "$1.objdump"
+cargo objdump -- -disassemble -print-imm-hex $1 >> $1.objdump
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     TIMEOUT_CMD="timeout"
@@ -27,7 +27,7 @@ fi
 
 echo "Testing: $1.img"
 
-$TIMEOUT_CMD $2 qemu-system-aarch64 -machine raspi3 -semihosting -nographic -kernel "$1.img"
+$TIMEOUT_CMD $2 qemu-system-aarch64 -machine raspi3 -semihosting -nographic -kernel $1.img
 
 exit $?
 
