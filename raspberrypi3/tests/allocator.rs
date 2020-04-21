@@ -6,9 +6,7 @@
 
 extern crate alloc;
 
-use libkernel::allocator::LockedHeap;
 use libkernel::{serial_println, serial_print};
-use libkernel::qemu::{QemuExitCode, qemu_exit};
 use libkernel::ALLOCATOR;
 use core::panic::PanicInfo;
 use alloc::boxed::Box;

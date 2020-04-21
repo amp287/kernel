@@ -15,6 +15,8 @@ pub mod qemu;
 pub mod allocator;
 pub mod interrupt;
 pub mod mmu;
+pub mod exception;
+pub mod bit_op;
 
 use core::panic::PanicInfo;
 use qemu::{qemu_exit, QemuExitCode};

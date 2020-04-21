@@ -34,3 +34,7 @@ harness = true
 [[test]]
 name = "mmu_test"
 harness = true
+
+[[test]]
+name = "interrupt_test"
+harness = true

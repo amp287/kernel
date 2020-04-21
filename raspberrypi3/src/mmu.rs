@@ -1,6 +1,7 @@
 
 //use std::fmt;
 use core::convert::TryInto;
+use crate::{set_bit,set_bits,get_bits};
 
 const LEVEL0_START: u8 = 39;
 const LEVEL1_START: u8 = 30;
@@ -176,31 +177,6 @@ impl GranuleSize {
             GranuleSize::_64KB =>    (16, 0xFFFFFFFF  << 16),
             GranuleSize::_16KB =>    (14, 0xFFFFFFFFC << 14),
             GranuleSize::_4KB  =>    (12, 0xFFFFFFFFF << 12),
-        }
-    }
-}
-
-macro_rules! set_bit {
-    ($data:expr, $bit_num:expr, $set_to:expr) => {
-        $data &= !(1 << $bit_num);
-        $data |= $set_to << $bit_num;
-    }
-}
-
-macro_rules! set_bits {
-    ($data:expr, $start_bit:expr, $set_to:expr, $mask:expr) => {
-        $data &= !($mask << $start_bit);
-        $data |= $set_to << $start_bit;
-    }
-}
-
-macro_rules! get_bits {
-    ($data:expr, $start_bit:expr, $mask:expr) => {
-        {
-            let mut copy = $data;
-            copy = copy >> $start_bit;
-            copy &= $mask;
-            copy
         }
     }
 }

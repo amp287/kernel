@@ -5,7 +5,6 @@ use core::panic::PanicInfo;
 use libkernel::serial_println;
 use cortex_a::regs;
 use register::cpu::RegisterReadOnly;
-use libkernel::interrupt::{interrupt_init, generate_interrupt};
 
 extern crate alloc;
 
@@ -25,14 +24,6 @@ pub unsafe extern "C" fn kernel_main(r0: u32, r1: u32, atags: u32) -> ! {
     };
 
     serial_println!("Exception Level: {}", el);
-
-    interrupt_init();
-
-    serial_println!("Init finished");
-
-    generate_interrupt();
-
-    serial_println!("Shouldnt get here");
 
     loop {}
 }
