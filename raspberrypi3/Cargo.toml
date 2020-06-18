@@ -38,3 +38,7 @@ harness = true
 [[test]]
 name = "interrupt_test"
 harness = true
+
+[[test]]
+name = "interrupt_test_save"
+harness = true

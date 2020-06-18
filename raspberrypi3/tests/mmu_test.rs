@@ -20,9 +20,10 @@ static mut LVL3TABLE: TranslationTable = TABLE_INIT;
 
 #[no_mangle]
 pub extern "C" fn kernel_main() -> ! {
-
+    serial_println!("--------------- mmu_test --------------- ");
     unsafe { libkernel::interrupt::interrupt_init(); }
     test_main();
+    serial_println!("--------------- Success --------------- ");
     loop {}
 }
 

@@ -15,6 +15,7 @@ const MEM_SIZE:usize = 64*1000;
 
 #[no_mangle]
 pub extern "C" fn kernel_main() -> ! {
+    serial_println!("--------------- allocator --------------- ");
     unsafe {ALLOCATOR.init(0x20000, MEM_SIZE);}
     test_main();
     loop {}
