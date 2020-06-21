@@ -29,8 +29,7 @@ jobs:
     # Get all needed software to build and run
     - name: Setup 
       run: |
-        rustup toolchain install nightly-2020-06-01
-        rustup default nightly-2020-06-01
+        rustup install nightly
         rustup component add rust-src
         cargo install cargo-xbuild
         brew update

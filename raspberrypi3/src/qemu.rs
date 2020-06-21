@@ -20,8 +20,6 @@ pub fn qemu_exit(code: QemuExitCode) -> !{
     semihosting_sys_exit_call(&block)
 }
 
-
-
 /// The parameter block layout that is expected by QEMU.
 #[repr(C)]
 struct qemu_parameter_block {
@@ -39,14 +37,10 @@ extern "C" fn semihosting_sys_exit_call(block: &qemu_parameter_block) -> ! {
     unsafe {
         // move block address into x1 before we overwrite x0/w0 
         asm!(
-            "
-             mov x1, $0
-             mov w0, 0x18
-             hlt #0xF000"
-             : // No Outputs
-             : "r"(block as *const _ as u64)
-             : "memory"
-             : "volatile"
+            "mov x1, {}",
+            "mov w0, 0x18",
+            "hlt #0xF000",
+            in(reg) block as *const _ as u64    
         );
     }
 

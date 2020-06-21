@@ -437,12 +437,13 @@ pub unsafe fn enable_mmu(level_0_table: &TranslationTable) {
     let physical_addr_range = ID_AA64MMFR0_EL1.read(ID_AA64MMFR0_EL1::PARange);
     
     MAIR_EL1.write(
-        MAIR_EL1::Attr1_HIGH::Memory_OuterWriteBack_NonTransient_ReadAlloc_WriteAlloc
-            + MAIR_EL1::Attr1_LOW_MEMORY::InnerWriteBack_NonTransient_ReadAlloc_WriteAlloc
+        // Attribute 1
+        MAIR_EL1::Attr1_Normal_Outer::WriteBack_NonTransient_ReadWriteAlloc +
+        MAIR_EL1::Attr1_Normal_Inner::WriteBack_NonTransient_ReadWriteAlloc +
 
-            // Attribute 0 - Device.
-            + MAIR_EL1::Attr0_HIGH::Device
-            + MAIR_EL1::Attr0_LOW_DEVICE::Device_nGnRE,
+        // Attribute 0 - Device.
+        MAIR_EL1::Attr0_Device::nonGathering_nonReordering_EarlyWriteAck
+
     );
 
     TTBR0_EL1.set_baddr(level_0_table as *const TranslationTable as u64);

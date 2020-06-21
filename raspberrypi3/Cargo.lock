@@ -7,7 +7,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "cortex-a"
-version = "2.9.0"
+version = "3.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "register 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -18,7 +18,7 @@ name = "kernel"
 version = "0.1.0"
 dependencies = [
  "cc 1.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
- "cortex-a 2.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cortex-a 3.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "register 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "spin 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -66,7 +66,7 @@ dependencies = [
 
 [metadata]
 "checksum cc 1.0.50 (registry+https://github.com/rust-lang/crates.io-index)" = "95e28fa049fda1c330bcf9d723be7663a899c4679724b34c81e9f5a326aab8cd"
-"checksum cortex-a 2.9.0 (registry+https://github.com/rust-lang/crates.io-index)" = "fd807a12241940332c7c9f6aeaf3f7539d4213853d32445d17c97f3e7eebe118"
+"checksum cortex-a 3.0.3 (registry+https://github.com/rust-lang/crates.io-index)" = "c6467294dffa4f14094880a0f5dab0dfc8e163d808c305378669f68c6ff1fda0"
 "checksum lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 "checksum register 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6e10c2ba523bc81270ecb9b6ca6704f42cd1efec89fddbfe0e520ad0e218f401"
 "checksum spin 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)" = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"

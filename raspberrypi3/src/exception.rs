@@ -33,20 +33,14 @@ pub fn get_current_exception_level() -> ExceptionLevel {
 }
 
 pub unsafe fn set_sp_el0(stack_pointer: u64) {
-    asm!("msr SP_EL0, $0"
-        : //no outputs
-        : "r"(stack_pointer)
-        : "SP_EL0"
-        : "volatile"
+    asm!("msr SP_EL0, {}",
+        in(reg) stack_pointer
     );
 }
 
 pub unsafe fn set_exception_return_el_1(function: fn()) {
-    asm!("msr ELR_EL1, $0"
-        : // No Outputs
-        : "r"(function as *const u64)
-        : "ELR_EL1"
-        : "volatile"
+    asm!("msr ELR_EL1, {}",
+        in(reg) function as *const u64
     );
 }
 
