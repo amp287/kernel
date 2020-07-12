@@ -163,7 +163,6 @@ pub enum AttributeIndex {
     Seven = 7,
 }
 
-
 #[derive(Debug)]
 pub enum GranuleSize {
     _4KB = 0,
