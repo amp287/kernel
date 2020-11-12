@@ -2,3 +2,5 @@
 *.img
 
 *.objdump
+
+raspberrypi3/linker.map

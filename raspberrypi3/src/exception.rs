@@ -46,7 +46,7 @@ pub unsafe fn set_exception_return_el_1(function: fn()) {
 
 pub unsafe fn el1_to_el0(stack_pointer: u64, function: fn()) {
     use register::cpu::RegisterReadWrite;
-    let mut spsr_el1: u32 = 0;
+    let mut spsr_el1: u64 = 0;
 
     set_bits!(spsr_el1, 0, 0, 0b111); // go to el0
     set_bits!(spsr_el1, 6, 0b1111, 0b1111); // D,A,I,F interrupt masks

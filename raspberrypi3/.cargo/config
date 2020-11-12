@@ -1,5 +1,9 @@
+[unstable]
+build-std = ["core", "compiler_builtins", "alloc"]
+build-std-features = ["compiler-builtins-mem"]
+
 [target.aarch64-unknown-none]
-rustflags = ["-C", "link-arg=-Tlink.x"]
+rustflags = ["-C", "link-arg=-Tlink.x", "-C", "llvm-args=-global-isel=false", "-C", "link-arg=-Map=linker.map"]
 
 [build]
 target = "aarch64-unknown-none.json"

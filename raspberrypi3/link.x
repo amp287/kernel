@@ -55,8 +55,8 @@ SECTIONS
     __text_start = .;
     .text :
     {
-        KEEP(*(.text.boot))
-        *(.text)
+        KEEP(start.o(.boot))
+        *(.text*)
     }
     . = ALIGN(4096); /* align to page size */
     __text_end = .;
@@ -64,7 +64,7 @@ SECTIONS
     __rodata_start = .;
     .rodata :
     {
-        *(.rodata)
+        *(.rodata*)
     }
     . = ALIGN(4096); /* align to page size */
     __rodata_end = .;

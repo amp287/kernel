@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 spin = "0.5.2"
 volatile-register = "0.2.x"
-cortex-a = "3.0.3"
+cortex-a = "4.0.0"
 register = "0.5.x"
 
 [dependencies.lazy_static]

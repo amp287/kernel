@@ -17,6 +17,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     // put `link.x` in the build directory
     File::create(out_dir.join("link.x"))?.write_all(include_bytes!("link.x"))?;
 
+    println!("cargo:rerun-if-changed=link.x");
+
     // assemble the `asm.s` file
     build.file("src/start.s");
     build.file("src/interrupt.s");

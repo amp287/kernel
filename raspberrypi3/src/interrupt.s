@@ -42,7 +42,7 @@
     bl     \handler
 .endm
 
-.globl __interrupt_handlers
+.global __interrupt_handlers
 
 // The ,"ax",@progbits tells the assembler that the section is allocatable ("a"), executable ("x") and contains data ("@progbits").
 .section .exception_vectors, "ax", @progbits

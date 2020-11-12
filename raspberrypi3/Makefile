@@ -2,14 +2,14 @@
 all: build 
 
 build: 
-	cargo xbuild
-	cargo objcopy --target aarch64-unknown-none.json target/aarch64-unknown-none/debug/kernel -- -O binary kernel8.img
+	cargo build
+	cargo objcopy --target aarch64-unknown-none.json -- -O binary kernel8.img
 
 test:
 	cargo xtest -- 30
 
 objdump:
-	cargo objdump --target aarch64-unknown-none.json -- -disassemble -print-imm-hex target/aarch64-unknown-none/debug/kernel
+	cargo objdump --target aarch64-unknown-none.json -- --disassemble --print-imm-hex
 
 qemu:
 	qemu-system-aarch64 -machine raspi3 -nographic -kernel kernel8.img
