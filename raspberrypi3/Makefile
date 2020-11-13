@@ -28,7 +28,11 @@ qemu-asm:
 
 gdb: 
 	~/dev_tools/aarch64-none-elf-gdb/bin/aarch64-none-elf-gdb target/aarch64-unknown-none/debug/kernel
-	# use command: target remote :3333 to debug
+	# use command: target remote :3333 to debug (gdb)
+	
+lldb: lldb target/aarch64-unknown-none/debug/kernel
+	# use command: gdb-remote localhost:3333 (lldb)
+
 gdb-test:
 	~/dev_tools/aarch64-none-elf-gdb/bin/aarch64-none-elf-gdb target/aarch64-unknown-none/debug/mmu_test-459c245701d620ea
 

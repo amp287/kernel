@@ -55,12 +55,12 @@ SECTIONS
     __text_start = .;
     .text :
     {
-        KEEP(start.o(.boot))
-        *(.text*)
+        *(.text.boot) *(.text*)
     }
     . = ALIGN(4096); /* align to page size */
     __text_end = .;
  
+    /* static data initialized */
     __rodata_start = .;
     .rodata :
     {
@@ -72,16 +72,16 @@ SECTIONS
     __data_start = .;
     .data :
     {
-        *(.data)
+        *(.data*)
     }
     . = ALIGN(4096); /* align to page size */
     __data_end = .;
  
+    /* static data uninitialized */
     __bss_start = .;
     .bss :
     {
-        bss = .;
-        *(.bss)
+        *(.bss*)
     }
     . = ALIGN(4096); /* align to page size */
     __bss_end = .;

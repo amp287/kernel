@@ -1,10 +1,12 @@
 #![no_main]
 #![no_std]
+#![feature(custom_test_frameworks)]
 
 use core::panic::PanicInfo;
 use libkernel::serial_println;
 use cortex_a::regs;
 use register::cpu::RegisterReadOnly;
+use libkernel::qemu::{qemu_exit, QemuExitCode};
 
 extern crate alloc;
 
@@ -25,7 +27,9 @@ pub unsafe extern "C" fn kernel_main(r0: u32, r1: u32, atags: u32) -> ! {
 
     serial_println!("Exception Level: {}", el);
 
-    loop {}
+    serial_println!("Shutting Down");
+
+    qemu_exit(QemuExitCode::Success);
 }
 
 #[panic_handler]

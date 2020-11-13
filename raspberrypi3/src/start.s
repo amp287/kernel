@@ -1,7 +1,7 @@
 // AArch64 mode
  
 // To keep this in the first portion of the binary.
-.section ".boot"
+.section ".text.boot"
  
 // Make _start global.
 .globl _start

@@ -29,6 +29,7 @@ struct Uart {
     ITOP: RW<u32>,      // Integration Test Output Register
 }
 
+// TODO: Fix this
 pub unsafe fn uart_init() {
     let gpp_ud = 0x009 as *mut u32;
     let gppud_clk = 0x008 as *mut u32; 
@@ -56,7 +57,7 @@ pub unsafe fn uart_init() {
 }
 
 pub unsafe fn uart_put(character: u8) {
-    let uart = 0x3F201000 as *const Uart;
+    let uart = 0x3F20_1000 as *const Uart;
 
     while (*uart).FR.read() & (1 << 5) != 0 {
         
