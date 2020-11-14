@@ -1,0 +1,87 @@
+{
+    "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "test_name",
+            "description": "Name of the test to run",
+            "default": "",
+            "type": "promptString"
+        },
+    ],
+    "tasks": [
+        {
+            "label": "Build Kernel",
+            "type": "shell",
+            "command": "make build"
+        },
+        {
+            "label": "Build Test",
+            "type": "process",
+            "command": "${workspaceFolder}/.vscode/helper_scripts/cargo/cargo.py",
+            "args": ["build-test", "${input:test_name}"],
+            "options": {
+                "env": {
+                    "workspaceFolder": "${workspaceFolder}"
+                }
+            }
+        },
+        {
+            "label": "test_task",
+            "type": "shell",
+            "command": "printenv"
+        },
+        {
+            "label": "Build Test",
+            "type": "process",
+            "command": "${workspaceFolder}/.vscode/helper_scripts/cargo/cargo.py",
+            "args": ["build-test", "${input:test_name}"],
+            "options": {
+                "env": {
+                    "workspaceFolder": "${workspaceFolder}"
+                }
+            }
+        },
+        {
+            "label": "Test GDB",
+            "type": "shell",
+            "command": "${workspaceFolder}/.vscode/helper_scripts/qemu.py",
+            "args": ["start", "--", "-machine", "raspi3",  "-nographic", "-semihosting", "-gdb", "tcp::3333",  "-S", "-kernel", "${workspaceFolder}/vscode_tests/${input:test_name}_test.img"],
+            "dependsOn": "Build Test",
+            "dependsOrder": "sequence",
+        },
+        {
+            "label": "Kill qemu GDB",
+            "type": "process",
+            "command": "${workspaceFolder}/.vscode/helper_scripts/qemu.py",
+            "args": ["kill"],
+        },
+        {
+            "label": "Kernel GDB",
+            "type": "shell",
+            "command": "make",
+            "dependsOn": "Build Kernel",
+            "args": ["qemu-gdb"],
+            "isBackground": true,
+            // This task is run before some debug tasks.
+            // Problem is, it's a watch script, and since it never exits, VSCode
+            // complains. All this is needed so VSCode just lets it run.
+            "problemMatcher": [
+                {
+                "pattern": [
+                    {
+                    "regexp": ".",
+                    "file": 1,
+                    "location": 2,
+                    "message": 3
+                    }
+                ],
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".",
+                    "endsPattern": ".",
+                }
+                }
+            ]
+        }
+    ]
+}

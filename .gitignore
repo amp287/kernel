@@ -4,3 +4,5 @@
 *.objdump
 
 raspberrypi3/linker.map
+
+*.pyc

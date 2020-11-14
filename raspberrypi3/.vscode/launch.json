@@ -1,0 +1,36 @@
+{
+    "inputs": [
+        {
+            "id": "test_name",
+            "description": "Name of the test to run",
+            "default": "",
+            "type": "promptString"
+        },
+    ],
+    "configurations": [
+        {
+            "name": "Debug Kernel",
+            "type": "lldb",
+            "request": "custom",
+            "targetCreateCommands": ["target create ${workspaceFolder}/target/aarch64-unknown-none/debug/kernel"],
+            "processCreateCommands": ["gdb-remote localhost:3333"],
+            "preLaunchTask": "Kernel GDB"
+        },
+        {
+            "name": "Debug test",
+            "type": "lldb",
+            "request": "custom",
+            "targetCreateCommands": ["target create ${workspaceFolder}/target/aarch64-unknown-none/debug/deps/allocator-85cd9c277e3bcff4"],
+            "processCreateCommands": ["gdb-remote localhost:3333"],
+        },
+        {
+            "name": "Test",
+            "type": "lldb",
+            "request": "custom",
+            "targetCreateCommands": ["target create ${command:'echo ${input:test_name}'"],
+            "processCreateCommands": ["gdb-remote localhost:3333"],
+        }
+
+
+    ]
+}
