@@ -106,8 +106,12 @@ impl Heap {
 
 impl Heap {
     unsafe fn alloc(&mut self, _layout: Layout) -> *mut u8 {
+        use crate::serial_println;
+
         let size = _layout.size();
-        let mut block: Option<*mut u8> = None; 
+        let mut block: Option<*mut u8> = None;
+         
+        serial_println!("{:?}", _layout);
 
         if size <= 8 {
             block = self._8byte_blocks.alloc();
@@ -130,6 +134,7 @@ impl Heap {
         }
 
         if let Some(blk) = block {
+            assert!(blk as usize % _layout.align() == 0);
             blk
         } else {
             null_mut()

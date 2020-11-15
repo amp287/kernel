@@ -42,15 +42,20 @@
             }
         },
         {
-            "label": "Test GDB",
-            "type": "shell",
-            "command": "${workspaceFolder}/.vscode/helper_scripts/qemu.py",
-            "args": ["start", "--", "-machine", "raspi3",  "-nographic", "-semihosting", "-gdb", "tcp::3333",  "-S", "-kernel", "${workspaceFolder}/vscode_tests/${input:test_name}_test.img"],
+            "label": "test_gdb",
+            "type": "process",
+            "command": "curl",
+            "args": ["-d", 
+                "{\"args\":[\"-machine\",\"raspi3\",\"-nographic\",\"-gdb\",\"tcp::3333\",\"-S\",\"-kernel\",\"${workspaceFolder}/vscode_tests/${input:test_name}_test.img\"]}",
+                "-X", 
+                "POST",
+                "http://localhost:8000/qemu"
+            ],
             "dependsOn": "Build Test",
             "dependsOrder": "sequence",
         },
         {
-            "label": "Kill qemu GDB",
+            "label": "kill_qemu",
             "type": "process",
             "command": "${workspaceFolder}/.vscode/helper_scripts/qemu.py",
             "args": ["kill"],

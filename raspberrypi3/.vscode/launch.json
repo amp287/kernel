@@ -20,8 +20,10 @@
             "name": "Debug test",
             "type": "lldb",
             "request": "custom",
-            "targetCreateCommands": ["target create ${workspaceFolder}/target/aarch64-unknown-none/debug/deps/allocator-85cd9c277e3bcff4"],
+            "targetCreateCommands": ["target create ${workspaceFolder}/vscode_tests/${input:test_name}_test"],
             "processCreateCommands": ["gdb-remote localhost:3333"],
+            "preLaunchTask": "test_gdb",
+            "postDebugTask": "kill_qemu"
         },
         {
             "name": "Test",
